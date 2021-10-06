@@ -25,6 +25,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
 
         public IActionResult Privacy()
         {
+            // Test
             return View();
         }
 
