@@ -13,6 +13,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
     {
         private readonly ILogger<HomeController> _logger;
 
+        // code 1
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;

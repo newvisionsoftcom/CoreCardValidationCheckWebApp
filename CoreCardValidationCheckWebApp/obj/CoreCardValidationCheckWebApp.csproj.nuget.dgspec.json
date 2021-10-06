@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp.csproj": {}
+    "D:\\Project\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp.csproj": {}
   },
   "projects": {
-    "D:\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp.csproj": {
+    "D:\\Project\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp.csproj",
+        "projectUniqueName": "D:\\Project\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp.csproj",
         "projectName": "CoreCardValidationCheckWebApp",
-        "projectPath": "D:\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp.csproj",
-        "packagesPath": "C:\\Users\\suhas.pandit\\.nuget\\packages\\",
-        "outputPath": "D:\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\obj\\",
+        "projectPath": "D:\\Project\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp.csproj",
+        "packagesPath": "C:\\Users\\parikshit.tirathkar\\.nuget\\packages\\",
+        "outputPath": "D:\\Project\\CoreCardValidationCheckWebApp\\CoreCardValidationCheckWebApp\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\suhas.pandit\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\parikshit.tirathkar\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -40,9 +40,43 @@
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
           "dependencies": {
+            "Dapper": {
+              "target": "Package",
+              "version": "[2.0.90, )"
+            },
             "Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation": {
               "target": "Package",
               "version": "[3.1.18, )"
+            },
+            "Microsoft.AspNetCore.Mvc.TagHelpers": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[5.0.10, )"
+            },
+            "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
+              "target": "Package",
+              "version": "[3.1.5, )"
+            },
+            "PagedList.Core": {
+              "target": "Package",
+              "version": "[1.17.4, )"
+            },
+            "System.Data.SqlClient": {
+              "target": "Package",
+              "version": "[4.8.3, )"
             }
           },
           "imports": [
@@ -55,24 +89,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.10, 3.1.10]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.1.18, 3.1.18]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[3.1.0, 3.1.0]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[3.1.0, 3.1.0]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -81,7 +97,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-rc.1.21463.6\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

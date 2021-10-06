@@ -6,12 +6,60 @@
     <title>@ViewData["Title"] - CoreCardValidationCheckWebApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <style>
+     /*   .divpopupmsg {
+            text-align: center;
+            font-weight: 500;
+            z-index: 999999;
+        }
+
+        #myModalPopup {
+            z-index: 9999;
+        }
+
+        .bgcolor {
+            background: #97c9ff;
+        }
+
+        .modal-dialog {
+            max-width: 600px;
+        }
+
+        .partmsgpopup {
+            margin-top: 6%;
+            max-width: 350px;
+        }
+
+        .vertical-menu {
+            width: 200px;
+        }
+
+            .vertical-menu a {
+                background-color: #eee;
+                color: black;
+                display: block;
+                padding: 12px;
+                text-decoration: none;
+            }
+
+                .vertical-menu a:hover {
+                    background-color: #ccc;
+                }
+
+                .vertical-menu a.active {
+                    background-color: #04AA6D;
+                    color: white;
+                }*/
+    </style>
+
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CoreCardValidationCheckWebApp</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Core Card</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -19,10 +67,16 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ExistingProcedure" asp-action="Index">Procedure</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ValidationSteps" asp-action="Index">ValidationSteps</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="ValitationScripts" asp-action="Index">ValitationScripts</a>
                         </li>
                     </ul>
                 </div>
@@ -30,9 +84,78 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+        @RenderBody()
+
+        @*<main role="main" class="pb-3">
+            <div class="row">
+                <div class="col-md-3 vertical-menu">
+                    <a href="#" class="active">Menu</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Category" asp-action="Index">Category</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="ExistingProcedure" asp-action="Index">Procedure</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="ValidationSteps" asp-action="Index">Validation Steps</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="ValitationScripts" asp-action="Index">Valitation Scripts</a>
+                </div>
+                <div class="col-md-9">@RenderBody()</div>
+            </div>
+        </main>*@
+    </div>
+    <div class="modal-backdrop1">
+        <div id="loader" class="loaderhide"></div>
+    </div>
+
+
+    <!-- Modal -->
+    <div id="myModalPopup" class="modal fade" role="dialog">
+        <div class="modal-dialog partmsgpopup">
+            <!-- Modal content-->
+            <div class="modal-content bgcolor">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body divpopupmsg">
+                    <p id="idmsg"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="divShow">
+                    </div>
+                </div>
+                @*<div class="modal-footer">
+                        <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+                    </div>*@
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Delete -->
+    <div id="myModalDelete" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>Do You Want to Delete Record ?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-dark" data-dismiss="modal">Close</button>
+                    <a href="" class="btn btn-outline-danger" onclick="Delete()">Confirm</a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
@@ -40,7 +163,7 @@
             &copy; 2021 - CoreCardValidationCheckWebApp - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    @*<script src="~/lib/jquery/dist/jquery.min.js"></script>*@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @RenderSection("Scripts", required: false)

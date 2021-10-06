@@ -1,0 +1,151 @@
+﻿@model IEnumerable<CoreCardValidationCheckWebApp.Models.ValidationStepsModel>
+@*@model PaginatedList<CoreCardValidationCheckWebApp.Models.ValidationStepsModel>*@
+
+@{
+    ViewData["Title"] = "Existing Procedure Name";
+}
+
+<div class="row">
+    <div class="form-group">
+        <a href="" data-id="0" data-toggle="modal" class="modelEdit btn btn-outline-primary">Add Validation Step</a>
+    </div>
+</div>
+
+@using (Html.BeginForm("Index", "ValidationSteps", FormMethod.Get))
+{
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <label class="control-label">Task Activity Name</label>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+            
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            <input type="submit" value="Search" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+}
+<div class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.ActionLink("Task Activity Name", "Index", new { sortOrder = ViewBag.TaskActivityName_Sort, currentFilter = ViewBag.CurrentFilter })
+                </th>
+                <th>
+                    <label class="control-label">Category Name</label>
+                    @*@Html.ActionLink("Category Name", "Index", new { sortOrder = ViewBag.CategoryName_Sort, currentFilter = ViewBag.CurrentFilter })*@
+                </th>
+                <th>
+                    <label class="control-label">Complexiety Name</label>
+                </th>
+                <th>
+                    <label class="control-label">Existing Procedure Name</label>
+                </th>
+                <th>  <label class="control-label">Action</label></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TaskActivityName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ComplexietyName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExistingProcedureName)
+                    </td>
+                    <td>
+                        <a href="" data-id="@item.TaskActivityId" data-toggle="modal" class="modelEdit btn btn-outline-primary">Edit</a>
+                        <a href="" data-id="@item.TaskActivityId" data-toggle="modal" class="modelDelete btn btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+
+<br />
+@*@{
+        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+    }
+
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex - 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default @prevDisabled">
+        Previous
+    </a>
+    <a asp-action="Index"
+       asp-route-sortOrder="@ViewData["CurrentSort"]"
+       asp-route-pageNumber="@(Model.PageIndex + 1)"
+       asp-route-currentFilter="@ViewData["CurrentFilter"]"
+       class="btn btn-default @nextDisabled">
+        Next
+    </a>*@
+<input type="hidden" id="hiddenVTaskActivityId" />
+
+
+<script>
+    $(document).ready(function () {
+        $(".modelEdit").click(function () {
+            $.ajax({
+                url: '/ValidationSteps/GetExistingProcedureById',
+                datatype: "json",
+                data: { Id: $(this).data('id') },
+                type: "post",
+                contenttype: 'application/json; charset=utf-8',
+                async: true,
+                success: function (data) {
+                    $('#myModal').modal('show');
+                    $("#divShow").html(data);
+                },
+                error: function (xhr) {
+                    alert('error');
+                }
+            });
+        });
+
+
+        $(".modelDelete").click(function () {
+            $("#hiddenVTaskActivityId").val($(this).data('id'));
+            $('#myModalDelete').modal('show');
+        });
+    });
+
+
+    function Delete() {
+        $.ajax({
+            url: '/ValidationSteps/DeleteById',
+            datatype: "json",
+            data: { Id: $("#hiddenVTaskActivityId").val() },
+            type: "post",
+            contenttype: 'application/json; charset=utf-8',
+            async: true,
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('error');
+            }
+        });
+    }
+
+</script>
+

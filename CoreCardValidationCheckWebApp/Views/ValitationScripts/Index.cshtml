@@ -1,0 +1,114 @@
+﻿@model IEnumerable<CoreCardValidationCheckWebApp.Models.ValitationScriptsModel>
+
+@{
+    ViewData["Title"] = "Valitation Scripts";
+}
+
+<div class="row">
+    <div class="form-group">
+        <a href="" data-id="0" data-toggle="modal" class="modelEdit btn btn-outline-primary">Add Validation Scripts</a>
+    </div>
+</div>
+
+@using (Html.BeginForm("Index", "ValitationScripts", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label">Task Activity Name</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @*@Html.DisplayNameFor(model => model.TaskActivityName)*@
+                    @Html.ActionLink("Task Activity Name", "Index", new { sortOrder = ViewBag.TaskActivityName_Sort, currentFilter = ViewBag.CurrentFilter })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ScriptName)
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TaskActivityName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ScriptName)
+                    </td>
+                    <td>
+                        <a href="" data-id="@item.ScriptId" data-toggle="modal" class="modelEdit btn btn-outline-primary">Edit</a>
+                        <a href="" data-id="@item.ScriptId" data-toggle="modal" class="modelDelete btn btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<input type="hidden" id="hiddenVTaskActivityId" />
+
+<script>
+    $(document).ready(function () {
+        $(".modelEdit").click(function () {
+            $.ajax({
+                url: '/ValitationScripts/GetExistingProcedureById',
+                datatype: "json",
+                data: { Id: $(this).data('id') },
+                type: "post",
+                contenttype: 'application/json; charset=utf-8',
+                async: true,
+                success: function (data) {
+                    $('#myModal').modal('show');
+                    $("#divShow").html(data);
+                },
+                error: function (xhr) {
+                    alert('error');
+                }
+            });
+        });
+
+        $(".modelDelete").click(function () {
+            $("#hiddenVTaskActivityId").val($(this).data('id'));
+            $('#myModalDelete').modal('show');
+        });
+    });
+
+    function Delete() {
+        $.ajax({
+            url: '/ValitationScripts/DeleteById',
+            datatype: "json",
+            data: { Id: $("#hiddenVTaskActivityId").val() },
+            type: "post",
+            contenttype: 'application/json; charset=utf-8',
+            async: true,
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('error');
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,99 @@
+﻿
+@model CoreCardValidationCheckWebApp.Models.ValitationScriptsModel
+
+<input type="hidden" asp-for="ScriptId" />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <label asp-for="TaskActivityName" class="control-label"></label>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.TaskActivityId, new SelectList(Model.ValidationStepsList, "TaskActivityId", "TaskActivityName"), "Select TaskActivity Name", new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-8">
+        <div class="form-group">
+            <input type="file" id="FileUpload1" class="uploadsingle" multiple />
+            @*<input type="file" id="FileUpload1" multiple class="uploadmultiple" style="display:none" />*@
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+    </div>
+    <div class="col-md-8">
+        <div class="form-group">
+            <input type="button" id="btnUpload" value="Upload Files" class="btn btn-success" />
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        //if ($("#FileUpload1").val() == 0) {
+        //    $(".uploadmultiple").show();
+        //} else {
+        //    $(".uploadsingle").show();
+        //}
+        $('#btnUpload').click(function () {
+
+            if ($("#TaskActivityId").val() == "") {
+                $('#myModalPopup').modal('show');
+                document.getElementById("idmsg").innerHTML = "Please enter Task Activity Name";
+                return false;
+            }
+
+            if (window.FormData !== undefined) {
+                var fileUpload = $("#FileUpload1").get(0);
+                var files = fileUpload.files;
+                var fileData = new FormData();
+
+                debugger;
+                for (var i = 0; i < files.length; i++) {
+                    if (files[i].name.split('.').pop().toLowerCase() != "ps1") {
+                        $('#myModalPopup').modal('show');
+                        document.getElementById("idmsg").innerHTML = "Please upload .ps1 files only";
+                        return false;
+                    }
+                }
+
+                //return false;
+
+                for (var i = 0; i < files.length; i++) {
+                    fileData.append("fileData", files[i]);
+                }
+
+                // add parameters
+                fileData.append("TaskActivityId", $("#TaskActivityId").val());
+                fileData.append("ScriptId", $("#ScriptId").val());
+
+                $.ajax({
+                    url: '/ValitationScripts/OnPostMyUploader',
+                    type: "POST",
+                    contentType: false,
+                    processData: false,
+                    data: fileData,
+                    success: function (result) {
+                        $('#myModal').modal('hide');
+                        location.reload();
+                        //repo.status
+                    },
+                    error: function (err) {
+                        alert(err.statusText);
+                    }
+                });
+            } else {
+                alert("FormData is not supported.");
+            }
+        });
+    });
+</script>  

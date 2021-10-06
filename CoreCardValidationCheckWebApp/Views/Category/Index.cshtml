@@ -1,0 +1,85 @@
+﻿@model IEnumerable<CoreCardValidationCheckWebApp.Models.CategoryModel>
+
+@{
+    ViewData["Title"] = "Category";
+}
+
+<div class="row">
+    <div class="form-group">
+        <a href="" data-id="0" data-toggle="modal" class="modelEdit btn btn-outline-primary">Add Category</a>
+    </div>
+</div>
+
+<div class="row">
+    <table class="table table-striped" id="tblCategory">
+        <thead>
+            <tr>
+                <th>        
+                    @Html.ActionLink("Category Name", "Index", new { sortOrder = ViewBag.CategoryName_Sort, currentFilter = ViewBag.CurrentFilter })
+
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CategoryName)
+                    </td>
+                    <td>
+                        <a href="" data-id="@item.CategoryId" data-toggle="modal" class="modelEdit btn btn-outline-primary">Edit</a>
+                        <a href="" data-id="@item.CategoryId" data-toggle="modal" class="modelDelete btn btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<input type="hidden" id="hiddenCatId" />
+
+<script>
+    $(document).ready(function () {
+        $(".modelEdit").click(function () {
+            $.ajax({
+                url: '/Category/GetCategoryById',
+                datatype: "json",
+                data: { Id: $(this).data('id') },
+                type: "post",
+                contenttype: 'application/json; charset=utf-8',
+                async: true,
+                success: function (data) {                   
+                    $('#myModal').modal('show');
+                    $("#divShow").html(data);
+                },
+                error: function (xhr) {
+                    alert('error');
+                }
+            });
+        });
+
+        $(".modelDelete").click(function () {
+            $("#hiddenCatId").val($(this).data('id'));
+            $('#myModalDelete').modal('show');
+        });
+    });
+
+    function Delete() {
+        $.ajax({
+            url: '/Category/DeleteById',
+            datatype: "json",
+            data: { Id: $("#hiddenCatId").val() },
+            type: "post",
+            contenttype: 'application/json; charset=utf-8',
+            async: true,
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('error');
+            }
+        });
+    }
+</script>
+
