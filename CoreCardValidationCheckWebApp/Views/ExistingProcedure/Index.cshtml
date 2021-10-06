@@ -1,0 +1,106 @@
+﻿@model IEnumerable<CoreCardValidationCheckWebApp.Models.ExistingProcedureModel>
+
+@{
+    ViewData["Title"] = "Existing Procedure Name";
+}
+
+<div class="row">
+    <div class="form-group">
+        <a href="" data-id="0" data-toggle="modal" class="modelEdit btn btn-outline-primary">Add Existing Procedure Name</a>
+    </div>
+</div>
+
+@using (Html.BeginForm("Index", "ExistingProcedure", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="control-label">Existing Procedure Name</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>                  
+                    @Html.ActionLink("Existing Procedure Name", "Index", new { sortOrder = ViewBag.ExistingProcedureName_Sort, currentFilter = ViewBag.CurrentFilter })
+                </th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ExistingProcedureName)
+                    </td>
+                    <td>
+                        <a href="" data-id="@item.ExistingProcedureId" data-toggle="modal" class="modelEdit btn btn-outline-primary">Edit</a>
+                        <a href="" data-id="@item.ExistingProcedureId" data-toggle="modal" class="modelDelete btn btn-outline-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<input type="hidden" id="hiddenExitProId" />
+
+<script>
+    $(document).ready(function () {
+        $(".modelEdit").click(function () {
+            $.ajax({
+                url: '/ExistingProcedure/GetExistingProcedureById',
+                datatype: "json",
+                data: { Id: $(this).data('id') },
+                type: "post",
+                contenttype: 'application/json; charset=utf-8',
+                async: true,
+                success: function (data) {
+                    $('#myModal').modal('show');
+                    $("#divShow").html(data);
+                },
+                error: function (xhr) {
+                    alert('error');
+                }
+            });
+        });
+
+        $(".modelDelete").click(function () {
+            $("#hiddenExitProId").val($(this).data('id'));
+            $('#myModalDelete').modal('show');
+        });
+    });
+
+    function Delete() {
+        $.ajax({
+            url: '/ExistingProcedure/DeleteById',
+            datatype: "json",
+            data: { Id: $("#hiddenExitProId").val() },
+            type: "post",
+            contenttype: 'application/json; charset=utf-8',
+            async: true,
+            success: function (data) {
+                location.reload();
+            },
+            error: function (xhr) {
+                alert('error');
+            }
+        });
+    }
+
+</script>
+

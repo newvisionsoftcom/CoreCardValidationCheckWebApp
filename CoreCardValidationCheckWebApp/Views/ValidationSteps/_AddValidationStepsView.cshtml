@@ -1,0 +1,154 @@
+﻿@model CoreCardValidationCheckWebApp.Models.ValidationStepsModel
+
+<div class="row">
+    <div class="col-md-6">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="TaskActivityId" />
+        <div class="form-group">
+            <label asp-for="TaskActivityName" class="control-label"></label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <input asp-for="TaskActivityName" class="form-control" />
+            <span asp-validation-for="TaskActivityName" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="CategoryName" class="control-label"></label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            @*@Html.DropDownListFor(m => m.SelectedCategoryName, Model.CategoryNamelist, "Select Category Name")*@
+            @Html.DropDownListFor(m => m.CategoryId, new SelectList(Model.CategoryNameList, "CategoryId", "CategoryName"), "Select Category Name",new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="ComplexietyName" class="control-label"></label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.ComplexietyId, new SelectList(Model.ComplexietyList, "ComplexietyId", "ComplexietyName"), "Select Complexiety Name", new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="ExistingProcedureName" class="control-label"></label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.ExistingProcedureId, new SelectList(Model.ExistingProcedureList, "ExistingProcedureId", "ExistingProcedureName"), "Select Existing Procedure Name", new { @class = "form-control" })
+        </div>
+    </div>
+</div>
+
+@*<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <label asp-for="FrequencyName" class="control-label"></label>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            @Html.DropDownListFor(m => m.FrequencyId, new SelectList(Model.FrequencyList, "FrequencyId", "FrequencyName"), "Select Frequency Name")
+        </div>
+    </div>
+
+</div>*@
+
+
+
+
+<div class="row">
+    <div class="col-md-6">       
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            <input id="btnSubmitExistingProcedure" type="submit" value="Save" class="btn btn-success" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnSubmitExistingProcedure").click(function () {
+
+            if ($("#TaskActivityName").val() == "") {
+                $('#myModalPopup').modal('show');
+                document.getElementById("idmsg").innerHTML = "Please enter Task Activity Name";
+                return false;
+            }
+            if ($("#CategoryId").val() == "") {
+                $('#myModalPopup').modal('show');
+                document.getElementById("idmsg").innerHTML = "Please select Category Name";
+                return false;
+            }
+            if ($("#ComplexietyId").val() == "") {
+                $('#myModalPopup').modal('show');
+                document.getElementById("idmsg").innerHTML = "Please select Complexiety Type";
+                return false;
+            }
+            if ($("#ExistingProcedureId").val() == "") {
+                $('#myModalPopup').modal('show');
+                document.getElementById("idmsg").innerHTML = "Please select Existing Procedure Name";
+                return false;
+            }
+
+            //debugger;
+            //return false;
+
+            var valdata = {
+                TaskActivityName: $("#TaskActivityName").val(),
+                TaskActivityId: $("#TaskActivityId").val(),
+                CategoryId: $("#CategoryId").val(),
+                GroupId: 1,
+                ComplexietyId: $("#ComplexietyId").val(),
+                ExistingProcedureId: $("#ExistingProcedureId").val(),
+                FrequencyId: 1
+            };
+
+            $.ajax({
+                url: '/ValidationSteps/Update',
+                datatype: "json",
+                data: valdata,
+                type: "post",
+                contenttype: 'application/json; charset=utf-8',
+                async: true,
+                success: function (data) {
+                    if (data.success == false) {
+                        $('#myModalPopup').modal('show');
+                        document.getElementById("idmsg").innerHTML = data.responseText;
+                    }
+                    else {
+                        $('#myModal').modal('hide');
+                        location.reload();
+                    }
+                },
+                error: function (xhr) {
+                    alert('error');
+                }
+            });
+        });
+
+    });
+</script>

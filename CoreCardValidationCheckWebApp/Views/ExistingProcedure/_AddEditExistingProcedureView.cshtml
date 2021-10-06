@@ -1,0 +1,71 @@
+﻿@model CoreCardValidationCheckWebApp.Models.ExistingProcedureModel
+
+<div class="row">
+    <div class="col-md-6">     
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="ExistingProcedureId" />
+        <div class="form-group">
+            <label asp-for="ExistingProcedureName" class="control-label"></label>
+        </div>      
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <input asp-for="ExistingProcedureName" class="form-control" />
+            <span asp-validation-for="ExistingProcedureName" class="text-danger"></span>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <input id="btnSubmitExistingProcedure" type="submit" value="Save" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $("#btnSubmitExistingProcedure").click(function () {            
+            if ($("#ExistingProcedureName").val() == "") {
+                $('#myModalPopup').modal('show');
+                document.getElementById("idmsg").innerHTML = "Please enter Existing Procedure Name";
+                return false;
+            }
+
+            var valdata = {
+                ExistingProcedureId: $("#ExistingProcedureId").val(),
+                ExistingProcedureName: $("#ExistingProcedureName").val()
+            };
+
+            $.ajax({
+                url: '/ExistingProcedure/Update',
+                datatype: "json",               
+                data: valdata,
+                type: "post",
+                contenttype: 'application/json; charset=utf-8',
+                async: true,
+                success: function (data) {                  
+                    if (data.success == false) {
+                        $('#myModalPopup').modal('show');
+                        document.getElementById("idmsg").innerHTML = data.responseText;
+                    }
+                    else {
+                        $('#myModal').modal('hide');                       
+                        location.reload();
+                    }                 
+                },
+                error: function (xhr) {
+                    alert('error');                  
+                }
+            });
+        });
+              
+    });
+</script>
