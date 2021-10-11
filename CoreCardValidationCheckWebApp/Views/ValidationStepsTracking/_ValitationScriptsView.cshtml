@@ -1,0 +1,36 @@
+﻿@model IEnumerable<ScriptLib.Models.ValitationScriptsModel>
+
+
+<style>
+    /*.table td, .table th {
+        padding: 0rem !important;
+    }*/
+</style>
+
+<div class="">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ScriptName)
+                </th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ScriptName)
+                </td>
+                <th>Initial</th>
+                <td>
+                    <a href="" data-id="@item.ScriptId" data-toggle="modal" class="modelEdit btn btn-outline-primary">Run</a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

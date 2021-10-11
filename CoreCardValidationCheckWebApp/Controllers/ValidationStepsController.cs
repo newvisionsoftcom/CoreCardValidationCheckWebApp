@@ -1,31 +1,35 @@
-﻿using CoreCardValidationCheckWebApp.Helper;
-using CoreCardValidationCheckWebApp.Models;
-using CoreCardValidationCheckWebApp.SQLHelper;
+﻿using ScriptLib.Helper;
+using ScriptLib.Models;
+using ScriptLib.SQLHelper;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using PagedList;
-using PagedList.Core;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using ScriptLib.ScriptClasses;
+using ScriptLib;
+
 
 namespace CoreCardValidationCheckWebApp.Controllers
 {
     public class ValidationStepsController : Controller
     {
         private readonly ILogger<ExistingProcedureController> _logger;
-        private readonly ISQLDapper _sqlDapper;
+        private readonly ISQLDapper _sqlDapper;        
 
         DynamicParameters para = new DynamicParameters();
-        string responseText = "";
-        Boolean success = true;
         ValidationStepsModel result = new ValidationStepsModel();
+        static Response responseResult;
+        ValidationSteps objValidationSteps;
 
         public ValidationStepsController(ILogger<ExistingProcedureController> logger, ISQLDapper dapper)
         {
             _logger = logger;
             _sqlDapper = dapper;
+            objValidationSteps = new ValidationSteps(_sqlDapper);
+            responseResult = new Response();
         }
 
         public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
@@ -33,7 +37,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
             ViewBag.TaskActivityName_Sort = String.IsNullOrEmpty(sortOrder) ? "TaskActivityName_Sort" : "";
             ViewBag.CategoryName_Sort = String.IsNullOrEmpty(sortOrder) ? "CategoryName_Sort" : "";
 
-            var datagride = LoadExistingProcedure().AsQueryable();
+            var datagride = LoadValidationSteps().AsQueryable();
 
             if (searchString != null)
             {
@@ -78,94 +82,42 @@ namespace CoreCardValidationCheckWebApp.Controllers
             //return View(PaginatedList<ValidationStepsModel>.CreateAsync(datagride, pageNumber ?? 1, pageSize));
         }
 
-        public IActionResult Index_ok()
-        {
-            var result = LoadExistingProcedure();
-            return View(result);
-        }
+        //public IActionResult Index_ok()
+        //{
+        //    var result = LoadValidationSteps();
+        //    return View(result);
+        //}
 
-        private List<ValidationStepsModel> LoadExistingProcedure()           
+        private List<ValidationStepsModel> LoadValidationSteps()           
         {
-            // var para = new DynamicParameters();           
-            para.Add("Action", "GelAll");
-
-            var result = _sqlDapper.GetAll<ValidationStepsModel>(Constants.SVValidationSteps, para);
-            return (result);
+            return objValidationSteps.LoadValidationSteps();
         }
 
         [HttpPost]
-        public ActionResult GetExistingProcedureById(int Id)
+        public ActionResult GetValidationSteps(int Id)
         {            
             if (Id != 0)
-            {
-                para.Add("Action", "GelById");
-                para.Add("@TaskActivityId", Id);
-                result = _sqlDapper.Get<ValidationStepsModel>(Constants.SVValidationSteps, para);
+            {               
+               result = objValidationSteps.GetValidationSteps(Id);
             }
-
-            para.Add("Action", "GetCategoryList");          
-            List<CategoryModel> listCat = _sqlDapper.GetAll<CategoryModel>(Constants.SVValidationSteps, para);
-            result.CategoryNameList = listCat;
-
-            para.Add("Action", "GetComplexietyList");
-            List<ComplexietyModel> listComplex = _sqlDapper.GetAll<ComplexietyModel>(Constants.SVValidationSteps, para);
-            result.ComplexietyList = listComplex;
-
-            para.Add("Action", "GetExistingProcedureList");
-            List<ExistingProcedureModel> listExitPro = _sqlDapper.GetAll<ExistingProcedureModel>(Constants.SVValidationSteps, para);
-            result.ExistingProcedureList = listExitPro;
-
+            result.CategoryNameList = objValidationSteps.GetCategoryList();
+            result.ComplexietyList = objValidationSteps.GetComplexietyList();
+            result.ExistingProcedureList = objValidationSteps.GetExistingProcedureList();
             return PartialView("_AddValidationStepsView", result);
         }
 
         [HttpPost]
-        public ActionResult DeleteById(int Id)
+        public ActionResult Delete(int Id)
         {
-            para.Add("Action", "Delete");
-            para.Add("@TaskActivityId", Id);
-            result = _sqlDapper.Update<ValidationStepsModel>(Constants.SVValidationSteps, para);
-            //var resultView = LoadExistingProcedure();
-            //return View(resultView);
-
-            return Json(new { success = true, responseText = "Record Deleted" });
+            responseResult = objValidationSteps.Delete(Id);
+            return Json(new { success = responseResult.Status, responseText = responseResult.Message });
         }
 
         [HttpPost]
-        public ActionResult Update(ValidationStepsModel fm)
+        public ActionResult InsertUpdate(ValidationStepsModel objModel)
         {
-            para.Add("@GroupId", fm.GroupId);
-            para.Add("@TaskActivityId", fm.TaskActivityId);
-            para.Add("@TaskActivityName", fm.TaskActivityName);
-            para.Add("@CategoryId", fm.CategoryId);
-            para.Add("@ComplexietyId", fm.ComplexietyId);
-            para.Add("@ExistingProcedureId", fm.ExistingProcedureId);
-            para.Add("@FrequencyId", fm.FrequencyId);
-       
-            //Insert Record
-            if (fm.TaskActivityId == 0)
-            {
-                para.Add("Action", "GelById");
-                result = _sqlDapper.Get<ValidationStepsModel>(Constants.SVValidationSteps, para);
-                if (result != null)
-                {
-                    responseText = "Record is alredy present";
-                    success = false;
-                }
-                else
-                {
-                    para.Add("Action", "Insert");
-                    result = _sqlDapper.Update<ValidationStepsModel>(Constants.SVValidationSteps, para);
-                    responseText = "Inserted successfully";
-                }
-            }
-            else
-            {   //Update Record
-                para.Add("Action", "Update");
-                result = _sqlDapper.Update<ValidationStepsModel>(Constants.SVValidationSteps, para);
-
-                responseText = "Updated successfully";
-            }
-            return Json(new { success = success, responseText = responseText });
+            responseResult = objValidationSteps.InsertUpdate(objModel);
+            return Json(new { success = responseResult.Status, responseText = responseResult.Message });
         }
     }
 }

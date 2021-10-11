@@ -1,5 +1,5 @@
-using CoreCardValidationCheckWebApp.Helper;
-using CoreCardValidationCheckWebApp.SQLHelper;
+using ScriptLib.Helper;
+using ScriptLib.SQLHelper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -27,8 +27,8 @@ namespace CoreCardValidationCheckWebApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddDbContext<SQLContext>(options =>
-                          options.UseSqlServer(Configuration.GetConnectionString(Constants.SQLDBConnectionString)));
+            //services.AddDbContext<SQLContext>(options =>
+            //              options.UseSqlServer(Configuration.GetConnectionString(Constants.SQLDBConnectionString)));
             services.AddScoped<ISQLDapper, SQLDapper>();
         }
 
@@ -57,8 +57,8 @@ namespace CoreCardValidationCheckWebApp
                 endpoints.MapControllerRoute(
                     name: "default",
                       //pattern: "{controller=Home}/{action=Index}/{id?}");
-                      //pattern: "{controller=Category}/{action=Index}/{id?}");
-                      pattern: "{controller=ExistingProcedure}/{action=Index}/{id?}");
+                      pattern: "{controller=Category}/{action=Index}/{id?}");
+                //pattern: "{controller=ExistingProcedure}/{action=Index}/{id?}");
             });
         }
     }

@@ -1,13 +1,17 @@
-﻿using CoreCardValidationCheckWebApp.Helper;
-using CoreCardValidationCheckWebApp.Models;
-using CoreCardValidationCheckWebApp.SQLHelper;
+﻿using ScriptLib.Helper;
+using ScriptLib.Models;
+using ScriptLib.SQLHelper;
 using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using ScriptLib.ScriptClasses;
+using ScriptLib;
 
 namespace CoreCardValidationCheckWebApp.Controllers
 {
@@ -16,21 +20,20 @@ namespace CoreCardValidationCheckWebApp.Controllers
         private readonly ILogger<ExistingProcedureController> _logger;
         private readonly ISQLDapper _sqlDapper;
 
-        DynamicParameters para = new DynamicParameters();
-        string responseText = "";
-        Boolean success = true;
+        DynamicParameters para = new DynamicParameters();    
         ExistingProcedureModel result = new ExistingProcedureModel();
-
+        static Response responseResult;
+        ExistingProcedure objExistingProcedure;
         public ExistingProcedureController(ILogger<ExistingProcedureController> logger, ISQLDapper dapper)
         {
             _logger = logger;
             _sqlDapper = dapper;
+            objExistingProcedure = new ExistingProcedure(_sqlDapper);
+            responseResult = new Response();
         }
 
         public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
-            //var result = LoadExistingProcedure();
-            //return View(result);
             ViewBag.ExistingProcedureName_Sort = String.IsNullOrEmpty(sortOrder) ? "ExistingProcedureName_Sort" : "";            
 
             var datagride = LoadExistingProcedure().AsQueryable();
@@ -57,80 +60,35 @@ namespace CoreCardValidationCheckWebApp.Controllers
                     datagride = datagride.OrderByDescending(s => s.ExistingProcedureName);
                     break;
             }
-            return View(datagride.ToList());   // ok
+            return View(datagride.ToList());  
         }
         private List<ExistingProcedureModel> LoadExistingProcedure()
         {
-           // var para = new DynamicParameters();           
-            para.Add("Action", "GelAll");
-
-            var result = _sqlDapper.GetAll<ExistingProcedureModel>(Constants.SVExistingProcedure, para);
-            return result;
+            return objExistingProcedure.LoadExistingProcedure();
         }
 
         [HttpPost]
-        public ActionResult GetExistingProcedureById(int Id)
+        public ActionResult GetExistingProcedure(int Id)
         {
-            //var result = new ExistingProcedureModel();
             if (Id != 0)
             {
-               // var para = new DynamicParameters();
-                para.Add("Action", "GelById");
-                para.Add("@ExistingProcedureId", Id);
-                result = _sqlDapper.Get<ExistingProcedureModel>(Constants.SVExistingProcedure, para);
+                result = objExistingProcedure.GetExistingProcedure(Id);
             }
             return PartialView("_AddEditExistingProcedureView", result);
         }
 
         [HttpPost]
-        public ActionResult DeleteById(int Id)
+        public ActionResult Delete(int Id)
         {
-            para.Add("Action", "Delete");
-            para.Add("@ExistingProcedureId", Id);
-            result = _sqlDapper.Update<ExistingProcedureModel>(Constants.SVExistingProcedure, para);
-
-            //var resultView = LoadExistingProcedure();
-            //return View(resultView);
-
-            return Json(new { success = true, responseText = "Record Deleted" });
+            responseResult = objExistingProcedure.Delete(Id);
+            return Json(new { success = responseResult.Status, responseText = responseResult.Message });
         }
 
         [HttpPost]
-        public ActionResult Update(ExistingProcedureModel fm)
+        public ActionResult InsertUpdate(ExistingProcedureModel objModel)
         {
-            //var para = new DynamicParameters();
-            //string responseText = "";
-            //Boolean success = true;
-            //var result = new ExistingProcedureModel();
-
-            para.Add("ExistingProcedureId", fm.ExistingProcedureId);
-            para.Add("ExistingProcedureName", fm.ExistingProcedureName);
-
-            //Insert Record
-            if (fm.ExistingProcedureId == 0)
-            {
-                para.Add("Action", "GelById");
-                result = _sqlDapper.Get<ExistingProcedureModel>(Constants.SVExistingProcedure, para);
-                if (result != null)
-                {
-                    responseText = "Record is alredy present";
-                    success = false;
-                }
-                else
-                {
-                    para.Add("Action", "Insert");
-                    result = _sqlDapper.Update<ExistingProcedureModel>(Constants.SVExistingProcedure, para);
-                    responseText = "Inserted successfully";
-                }
-            }
-            else
-            {   //Update Record
-                para.Add("Action", "Update");
-                result = _sqlDapper.Update<ExistingProcedureModel>(Constants.SVExistingProcedure, para);
-
-                responseText = "Updated successfully";
-            }
-            return Json(new { success = success, responseText = responseText });
+            responseResult = objExistingProcedure.InsertUpdate(objModel);
+            return Json(new { success = responseResult.Status, responseText = responseResult.Message });
         }
     }
 }

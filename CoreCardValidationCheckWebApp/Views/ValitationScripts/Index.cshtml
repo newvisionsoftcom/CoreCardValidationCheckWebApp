@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CoreCardValidationCheckWebApp.Models.ValitationScriptsModel>
+﻿@model IEnumerable<ScriptLib.Models.ValitationScriptsModel>
 
 @{
     ViewData["Title"] = "Valitation Scripts";
@@ -72,7 +72,7 @@
     $(document).ready(function () {
         $(".modelEdit").click(function () {
             $.ajax({
-                url: '/ValitationScripts/GetExistingProcedureById',
+                url: '/ValitationScripts/GetExistingProcedure',
                 datatype: "json",
                 data: { Id: $(this).data('id') },
                 type: "post",
@@ -96,7 +96,7 @@
 
     function Delete() {
         $.ajax({
-            url: '/ValitationScripts/DeleteById',
+            url: '/ValitationScripts/Delete',
             datatype: "json",
             data: { Id: $("#hiddenVTaskActivityId").val() },
             type: "post",
