@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreCardValidationCheckWebApp", "CoreCardValidationCheckWebApp\CoreCardValidationCheckWebApp.csproj", "{36D7B255-4E93-40A5-9798-CB6E0E21074B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreCardValidationCheckWebApp", "CoreCardValidationCheckWebApp\CoreCardValidationCheckWebApp.csproj", "{36D7B255-4E93-40A5-9798-CB6E0E21074B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptLib", "ScriptLib\ScriptLib.csproj", "{7399DEEF-5E3B-4F8A-BB70-FC940F319B5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{36D7B255-4E93-40A5-9798-CB6E0E21074B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36D7B255-4E93-40A5-9798-CB6E0E21074B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36D7B255-4E93-40A5-9798-CB6E0E21074B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7399DEEF-5E3B-4F8A-BB70-FC940F319B5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7399DEEF-5E3B-4F8A-BB70-FC940F319B5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7399DEEF-5E3B-4F8A-BB70-FC940F319B5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7399DEEF-5E3B-4F8A-BB70-FC940F319B5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

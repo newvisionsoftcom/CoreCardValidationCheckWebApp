@@ -1,4 +1,4 @@
-﻿@model CoreCardValidationCheckWebApp.Models.ExistingProcedureModel
+﻿@model ScriptLib.Models.ExistingProcedureModel
 
 <div class="row">
     <div class="col-md-6">     
@@ -45,7 +45,7 @@
             };
 
             $.ajax({
-                url: '/ExistingProcedure/Update',
+                url: '/ExistingProcedure/InsertUpdate',
                 datatype: "json",               
                 data: valdata,
                 type: "post",

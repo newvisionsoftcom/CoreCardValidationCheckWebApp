@@ -1,4 +1,4 @@
-﻿@model IEnumerable<CoreCardValidationCheckWebApp.Models.ExistingProcedureModel>
+﻿@model IEnumerable<ScriptLib.Models.ExistingProcedureModel>
 
 @{
     ViewData["Title"] = "Existing Procedure Name";
@@ -63,7 +63,7 @@
     $(document).ready(function () {
         $(".modelEdit").click(function () {
             $.ajax({
-                url: '/ExistingProcedure/GetExistingProcedureById',
+                url: '/ExistingProcedure/GetExistingProcedure',
                 datatype: "json",
                 data: { Id: $(this).data('id') },
                 type: "post",
@@ -87,7 +87,7 @@
 
     function Delete() {
         $.ajax({
-            url: '/ExistingProcedure/DeleteById',
+            url: '/ExistingProcedure/Delete',
             datatype: "json",
             data: { Id: $("#hiddenExitProId").val() },
             type: "post",

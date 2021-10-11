@@ -1,37 +1,10 @@
-﻿@model IEnumerable<ScriptLib.Models.ValidationStepsModel>
-@*@model PaginatedList<CoreCardValidationCheckWebApp.Models.ValidationStepsModel>*@
+﻿@*@model IEnumerable<ScriptLib.Models.ValidationStepsModel>*@
+@model ScriptLib.Models.ValidationStepsTrackingModel
 
 @{
     ViewData["Title"] = "Existing Procedure Name";
 }
 
-<div class="row">
-    <div class="form-group">
-        <a href="" data-id="0" data-toggle="modal" class="modelEdit btn btn-outline-primary">Add Validation Step</a>
-    </div>
-</div>
-
-@using (Html.BeginForm("Index", "ValidationSteps", FormMethod.Get))
-{
-<div class="row">
-    <div class="col-md-2">
-        <div class="form-group">
-            <label class="control-label">Task Activity Name</label>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-group">
-            @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control" })
-            
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="form-group">
-            <input type="submit" value="Search" class="btn btn-primary" />
-        </div>
-    </div>
-</div>
-}
 <div class="row">
     <table class="table table-striped">
         <thead>
@@ -49,15 +22,17 @@
                 <th>
                     <label class="control-label">Existing Procedure Name</label>
                 </th>
-                <th>  <label class="control-label">Action</label></th>
+                @*<th>  <label class="control-label">Action</label></th>*@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model)
+            @foreach (var item in Model.ValidationStepsList)
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.TaskActivityName)
+                        <a class="card-link" data-toggle="collapse" href="#collapseOne_@item.TaskActivityId" onclick="myFunction(@item.TaskActivityId)">
+                            @Html.DisplayFor(modelItem => item.TaskActivityName)
+                        </a>                       
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.CategoryName)
@@ -68,9 +43,14 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.ExistingProcedureName)
                     </td>
-                    <td>
-                        <a href="" data-id="@item.TaskActivityId" data-toggle="modal" class="modelEdit btn btn-outline-primary">Edit</a>
-                        <a href="" data-id="@item.TaskActivityId" data-toggle="modal" class="modelDelete btn btn-outline-danger">Delete</a>
+                </tr>               
+                <tr>
+                    <td colspan="6" class="hiddenRow">
+                        <div id="collapseOne_@item.TaskActivityId" class="collapse">
+                            <div id="Scriptdiv_@item.TaskActivityId" class="divScriptList">
+                                Loading ...
+                            </div>
+                        </div>
                     </td>
                 </tr>
             }
@@ -79,27 +59,8 @@
 </div>
 
 
-<br />
-@*@{
-        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
-        var nextDisabled = !Model.HasNextPage ? "disabled" : "";
-    }
 
-    <a asp-action="Index"
-       asp-route-sortOrder="@ViewData["CurrentSort"]"
-       asp-route-pageNumber="@(Model.PageIndex - 1)"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default @prevDisabled">
-        Previous
-    </a>
-    <a asp-action="Index"
-       asp-route-sortOrder="@ViewData["CurrentSort"]"
-       asp-route-pageNumber="@(Model.PageIndex + 1)"
-       asp-route-currentFilter="@ViewData["CurrentFilter"]"
-       class="btn btn-default @nextDisabled">
-        Next
-    </a>*@
-<input type="hidden" id="hiddenVTaskActivityId" />
+<input type="hidden" id="hiddenTaskActivityId" />
 
 
 <script>
@@ -127,8 +88,34 @@
             $("#hiddenVTaskActivityId").val($(this).data('id'));
             $('#myModalDelete').modal('show');
         });
+
     });
 
+    function myFunction(TaskActivityId) {
+        //  alert(TaskActivityId);
+
+        // debugger;
+
+        $("#hiddenTaskActivityId").val(TaskActivityId);
+
+        $.ajax({
+            url: '/ValidationStepsTracking/GetValidationScript_ByValidationStepsID',
+            datatype: "json",
+            data: { Id: TaskActivityId },
+            type: "post",
+            contenttype: 'application/json; charset=utf-8',
+            async: true,
+            success: function (data) {
+
+                //alert("TaskActivityId  == " + $("#hiddenTaskActivityId").val());
+
+                $("#Scriptdiv_" + $("#hiddenTaskActivityId").val()).html(data);
+            },
+            error: function (xhr) {
+                alert('error');
+            }
+        });
+    }
 
     function Delete() {
         $.ajax({

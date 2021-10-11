@@ -1,15 +1,18 @@
-﻿using CoreCardValidationCheckWebApp.Helper;
-using CoreCardValidationCheckWebApp.Models;
-using CoreCardValidationCheckWebApp.SQLHelper;
+﻿using ScriptLib.Helper;
+using ScriptLib.Models;
+using ScriptLib.SQLHelper;
 using Dapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.IO;
+using System.Data;
 using System.Linq;
+using ScriptLib.ScriptClasses;
+using ScriptLib;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace CoreCardValidationCheckWebApp.Controllers
 {
@@ -22,17 +25,21 @@ namespace CoreCardValidationCheckWebApp.Controllers
         string responseText = "";
         Boolean success = true;
         ValitationScriptsModel result = new ValitationScriptsModel();
+
+        static Response responseResult;
+        ValitationScripts objValitationScripts;
+
         public ValitationScriptsController(ILogger<ValitationScriptsController> logger, ISQLDapper dapper)
         {
             _logger = logger;
             _sqlDapper = dapper;
+            objValitationScripts = new ValitationScripts(_sqlDapper);
+            responseResult = new Response();
         }
 
-        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
-        // public IActionResult Index()
+        public ViewResult Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)    
         {
-            //var result = LoadValitationScripts();
-            //return View(result);
+            
             ViewBag.TaskActivityName_Sort = String.IsNullOrEmpty(sortOrder) ? "TaskActivityName_Sort" : "";
 
             var datagride = LoadValitationScripts().AsQueryable();
@@ -70,43 +77,21 @@ namespace CoreCardValidationCheckWebApp.Controllers
         }
         private List<ValitationScriptsModel> LoadValitationScripts()
         {
-            // var para = new DynamicParameters();           
-            para.Add("Action", "GelAll");
-
-            var result = _sqlDapper.GetAll<ValitationScriptsModel>(Constants.SVValitationScripts, para);
-            return result;
+            return objValitationScripts.LoadValitationScripts();
         }
 
-
         [HttpPost]
-        public ActionResult GetExistingProcedureById(int Id)
+        public ActionResult GetExistingProcedure(int Id)
         {
             if (Id != 0)
             {
-                para.Add("Action", "GelById");
-                para.Add("@ScriptId", Id);
-                result = _sqlDapper.Get<ValitationScriptsModel>(Constants.SVValitationScripts, para);
+                result = objValitationScripts.GetExistingProcedure(Id);
             }
-
-            para.Add("Action", "GetValidationStepsList");
-            List<ValidationStepsModel> listCat = _sqlDapper.GetAll<ValidationStepsModel>(Constants.SVValitationScripts, para);
-            result.ValidationStepsList = listCat;
-
-            //para.Add("Action", "GetComplexietyList");
-            //List<ComplexietyModel> listComplex = _sqlDapper.GetAll<ComplexietyModel>(Constants.SVValidationSteps, para);
-            //result.ComplexietyList = listComplex;
-
-            //para.Add("Action", "GetExistingProcedureList");
-            //List<ExistingProcedureModel> listExitPro = _sqlDapper.GetAll<ExistingProcedureModel>(Constants.SVValidationSteps, para);
-            //result.ExistingProcedureList = listExitPro;
-
-            ////para.Add("Action", "GetFrequencyList");
-            ////List<FrequencyModel> listFreq = _sqlDapper.GetAll<FrequencyModel>(Constants.SVValidationSteps, para);
-            ////result.FrequencyList = listFreq;
-
+            result.ValidationStepsList = objValitationScripts.GetValidationSteps();
             return PartialView("_AddValitationScriptsView", result);
         }
 
+        // remove
         [HttpPost("FileUpload")]
         public async Task<IActionResult> UploadFileMethod2(List<IFormFile> files, ValitationScriptsModel data)
         {
@@ -165,21 +150,32 @@ namespace CoreCardValidationCheckWebApp.Controllers
                         }
                     }
 
-                    para.Add("TaskActivityId", data.TaskActivityId);
-                    para.Add("ScriptId", data.ScriptId);
-                    para.Add("ScriptName", formFile.FileName);
-                    para.Add("ScriptPath", formFile.FileName);
+                    //para.Add("TaskActivityId", data.TaskActivityId);
+                    //para.Add("ScriptId", data.ScriptId);
+                    //para.Add("ScriptName", formFile.FileName);
+                    //para.Add("ScriptPath", formFile.FileName);
 
-                    if (data.ScriptId == 0)
-                    {
-                        para.Add("Action", "Insert");
-                        result = _sqlDapper.Insert<ValitationScriptsModel>(Constants.SVValitationScripts, para);
-                    }
-                    else
-                    {
-                        para.Add("Action", "Update");
-                        result = _sqlDapper.Update<ValitationScriptsModel>(Constants.SVValitationScripts, para);
-                    }
+                    //added 
+                    data.ScriptName = formFile.FileName;
+                    data.ScriptPath = formFile.FileName;
+                    responseResult = objValitationScripts.InsertUpdate(data);
+
+                    //if (data.ScriptId == 0)
+                    //{
+                    //    responseResult = objValitationScripts.InsertUpdate(data);
+                    //    //return Json(new { success = responseResult.Status, responseText = responseResult.Message });
+
+                    //    //para.Add("Action", "Insert");
+                    //    //result = _sqlDapper.Insert<ValitationScriptsModel>(Constants.SVValitationScripts, para);
+                    //}
+                    //else
+                    //{
+                    //    responseResult = objValitationScripts.InsertUpdate(data);
+                    //    //return Json(new { success = responseResult.Status, responseText = responseResult.Message });
+
+                    //    //para.Add("Action", "Update");
+                    //    //result = _sqlDapper.Update<ValitationScriptsModel>(Constants.SVValitationScripts, para);
+                    //}
                 }
 
                 //ok
@@ -204,20 +200,31 @@ namespace CoreCardValidationCheckWebApp.Controllers
                 //        }
                 //    }
 
-                return new ObjectResult(new { status = "success" });
+                //return new ObjectResult(new { status = "success" });  ok 
             }
-            return new ObjectResult(new { status = "fail" });
 
+            //return new ObjectResult(new { status = "fail" }); ok 
+            return new ObjectResult(new { status = responseResult.Status });
         }
 
-        [HttpPost]
-        public ActionResult DeleteById(int Id)
-        {
-            para.Add("Action", "Delete");
-            para.Add("@ScriptId", Id);
-            result = _sqlDapper.Update<ValitationScriptsModel>(Constants.SVValitationScripts, para);
+        //[HttpPost]
+        //public ActionResult InsertUpdate(ValitationScriptsModel objModel)
+        //{
+        //    responseResult = objValitationScripts.InsertUpdate(objModel);
+        //    return Json(new { success = responseResult.Status, responseText = responseResult.Message });
+        //}
 
-            return Json(new { success = true, responseText = "Record Deleted" });
+        [HttpPost]
+        public ActionResult Delete(int Id)
+        {
+            responseResult = objValitationScripts.Delete(Id);
+            return Json(new { success = responseResult.Status, responseText = responseResult.Message });
+
+            //para.Add("Action", "Delete");
+            //para.Add("@ScriptId", Id);
+            //result = _sqlDapper.Update<ValitationScriptsModel>(Constants.SVValitationScripts, para);
+
+            //return Json(new { success = true, responseText = "Record Deleted" });
         }
 
     }

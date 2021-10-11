@@ -1,4 +1,4 @@
-﻿@model CoreCardValidationCheckWebApp.Models.CategoryModel
+﻿@model ScriptLib.Models.CategoryModel
 
 <div class="row">
     <div class="col-md-4">
@@ -31,18 +31,13 @@
 
 <script>
     $(document).ready(function () {
-
-        // alert();
+       
         $("#btnsubmitCategory").click(function () {
-            //  alert();
-
+          
             // var valdata = $("#frmCatgory").serialize();
-
             if ($("#CategoryName").val() == "") {
                 $('#myModalPopup').modal('show');
                 document.getElementById("idmsg").innerHTML = "Please enter category";
-
-               // alert("Please enter Category Name");
                 return false;
             }
 
@@ -51,31 +46,23 @@
                 CategoryName: $("#CategoryName").val()
             };
 
-            // debugger;
-            //return false;
-
+        
             $.ajax({
-                url: '/Category/Update',
+                url: '/Category/InsertUpdate',
                 datatype: "json",               
                 data: valdata,
                 type: "post",
                 contenttype: 'application/json; charset=utf-8',
                 async: true,
-                success: function (data) {                    
-                    debugger;
+                success: function (data) {      
                     if (data.success == false) {
                         $('#myModalPopup').modal('show');
                         document.getElementById("idmsg").innerHTML = data.responseText;
                     }
                     else {
-                        $('#myModal').modal('hide');
-                        //window.location.href = "Category/Index";
-                        //GetCategory();
+                        $('#myModal').modal('hide');                     
                         location.reload();
-                    }                 
-                   
-                    debugger;
-                  
+                    }   
                 },
                 error: function (xhr) {
                     alert('error');                  
@@ -83,19 +70,14 @@
             });
         });
 
-        function GetCategory() {
-            debugger;
+        function GetCategory() {        
             $.ajax({
                 url: '/Category/Index',
                 datatype: "json",              
                 type: "get",
                 contenttype: 'application/json; charset=utf-8',
                 async: true,
-                success: function (data) {
-                    //  alert("2222222");
-                    //debugger;
-                  //  $('#myModal').modal('hide');
-                    //$("#divCategories").html(data);
+                success: function (data) {                   
                 },
                 error: function (xhr) {
                     alert('error');

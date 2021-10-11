@@ -6,6 +6,31 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Compile Remove="Helper\**" />
+	  <Content Remove="Helper\**" />
+	  <EmbeddedResource Remove="Helper\**" />
+	  <None Remove="Helper\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Remove="Models\CategoryModel.cs" />
+	  <Compile Remove="Models\ComplexietyModel.cs" />
+	  <Compile Remove="Models\ErrorViewModel.cs" />
+	  <Compile Remove="Models\ExistingProcedureModel.cs" />
+	  <Compile Remove="Models\FrequencyModel.cs" />
+	  <Compile Remove="Models\ValidationStepsModel.cs" />
+	  <Compile Remove="Models\ValitationScriptsModel.cs" />
+	  <Compile Remove="Models\ValitationScriptsViewModel.cs" />
+	  <Compile Remove="SQLHelper\Dapper.cs" />
+	  <Compile Remove="SQLHelper\IDapper.cs" />
+	  <Compile Remove="SQLHelper\SQLContext.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Remove="Views\ValidationStepsTracking\_ValitationScriptsView.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Dapper" Version="2.0.90" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.18" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.TagHelpers" Version="2.2.0" />
@@ -22,7 +47,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Models\" />
+	  <Folder Include="SQLHelper\" />
 	  <Folder Include="wwwroot\UploadFile\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="Views\ExistingProcedure\Index.cshtml" />
+	  <None Include="Views\ExistingProcedure\_AddEditExistingProcedureView.cshtml" />
+	  <None Include="Views\Home\Index.cshtml" />
+	  <None Include="Views\Home\Privacy.cshtml" />
+	  <None Include="Views\Shared\Error.cshtml" />
+	  <None Include="Views\Shared\_Layout.cshtml" />
+	  <None Include="Views\Shared\_ValidationScriptsPartial.cshtml" />
+	  <None Include="Views\ValidationStepsTracking\_ValitationScriptsView.cshtml" />
+	  <None Include="Views\ValidationSteps\Index.cshtml" />
+	  <None Include="Views\ValidationSteps\_AddValidationStepsView.cshtml" />
+	  <None Include="Views\ValitationScripts\Index.cshtml" />
+	  <None Include="Views\ValitationScripts\_AddValitationScriptsView.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\ScriptLib\ScriptLib.csproj" />
 	</ItemGroup>
 
 </Project>
