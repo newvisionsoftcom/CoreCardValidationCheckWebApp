@@ -48,7 +48,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                datagride = datagride.Where(s => s.CategoryName.Contains(searchString));
+                datagride = datagride.Where(s => s.CategoryName.ToLower().Contains(searchString.ToLower()));
             }
 
             switch (sortOrder)

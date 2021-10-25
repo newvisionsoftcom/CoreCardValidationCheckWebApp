@@ -57,7 +57,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                datagride = datagride.Where(s => s.TaskActivityName.Contains(searchString));
+                datagride = datagride.Where(s => s.TaskActivityName.ToLower().Contains(searchString.ToLower()));
             }
 
             switch (sortOrder)
@@ -103,7 +103,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
                 if (formFile.Length > 0)
                 {
                     // full path to file in temp location
-                    //  var filePath = Path.GetTempFileName(); //we are using Temp file name just for the example. Add your own file path.
+                    //  var filePath = Path.GetTempFileName(); 
                     var filePath = Path.Combine(
                         Directory.GetCurrentDirectory(), "wwwroot/UploadFile",
                         formFile.FileName);
@@ -122,7 +122,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
         // [HttpPost("FileUpload")]
         // public IActionResult OnPostMyUploader(List<IFormFile> fileData, string data)  ok
         // public IActionResult OnPostMyUploader(List<IFormFile> fileData)
-        public IActionResult OnPostMyUploader(List<IFormFile> fileData, ValitationScriptsModel data)
+        public IActionResult OnPostFileUploader(List<IFormFile> fileData, ValitationScriptsModel data)
         {
             var dirpath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UploadFile/" + data.TaskActivityId);
 
@@ -150,12 +150,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
                         }
                     }
 
-                    //para.Add("TaskActivityId", data.TaskActivityId);
-                    //para.Add("ScriptId", data.ScriptId);
-                    //para.Add("ScriptName", formFile.FileName);
-                    //para.Add("ScriptPath", formFile.FileName);
-
-                    //added 
+                    // file parameters added 
                     data.ScriptName = formFile.FileName;
                     data.ScriptPath = formFile.FileName;
                     responseResult = objValitationScripts.InsertUpdate(data);
@@ -207,24 +202,11 @@ namespace CoreCardValidationCheckWebApp.Controllers
             return new ObjectResult(new { status = responseResult.Status });
         }
 
-        //[HttpPost]
-        //public ActionResult InsertUpdate(ValitationScriptsModel objModel)
-        //{
-        //    responseResult = objValitationScripts.InsertUpdate(objModel);
-        //    return Json(new { success = responseResult.Status, responseText = responseResult.Message });
-        //}
-
         [HttpPost]
         public ActionResult Delete(int Id)
         {
             responseResult = objValitationScripts.Delete(Id);
             return Json(new { success = responseResult.Status, responseText = responseResult.Message });
-
-            //para.Add("Action", "Delete");
-            //para.Add("@ScriptId", Id);
-            //result = _sqlDapper.Update<ValitationScriptsModel>(Constants.SVValitationScripts, para);
-
-            //return Json(new { success = true, responseText = "Record Deleted" });
         }
 
     }

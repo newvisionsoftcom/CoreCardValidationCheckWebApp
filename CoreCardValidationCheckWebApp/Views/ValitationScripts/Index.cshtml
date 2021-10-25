@@ -12,32 +12,36 @@
 
 @using (Html.BeginForm("Index", "ValitationScripts", FormMethod.Get))
 {
-    <div class="row">
-        <div class="col-md-2">
-            <div class="form-group">
-                <label class="control-label">Task Activity Name</label>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control" })
-
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="form-group">
-                <input type="submit" value="Search" class="btn btn-primary" />
-            </div>
+<div class="row">
+    <div class="col-md-2">
+        <div class="form-group">
+            <label class="control-label">Task Activity Name</label>
         </div>
     </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+
+        </div>
+    </div>
+    <div class="col-md-1">
+        <div class="form-group">
+            <input type="submit" value="Search" class="btn btn-primary" />
+        </div>
+    </div>
+    <div class="col-md-1">
+        <div class="form-group">
+            <input id="btnClear" type="submit" value="Clear" class="btn btn-primary" />
+        </div>
+    </div>
+</div>
 }
 
 <div class="row">
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>
-                    @*@Html.DisplayNameFor(model => model.TaskActivityName)*@
+                <th>               
                     @Html.ActionLink("Task Activity Name", "Index", new { sortOrder = ViewBag.TaskActivityName_Sort, currentFilter = ViewBag.CurrentFilter })
                 </th>
                 <th>
@@ -70,6 +74,10 @@
 
 <script>
     $(document).ready(function () {
+        $("#btnClear").click(function () {
+            $('#SearchString').val('');
+        });
+
         $(".modelEdit").click(function () {
             $.ajax({
                 url: '/ValitationScripts/GetExistingProcedure',
@@ -79,6 +87,7 @@
                 contenttype: 'application/json; charset=utf-8',
                 async: true,
                 success: function (data) {
+                    document.getElementById("idTitle").innerHTML = "Add/Edit Valitation Scripts";
                     $('#myModal').modal('show');
                     $("#divShow").html(data);
                 },

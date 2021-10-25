@@ -34,5 +34,20 @@ namespace ScriptLib.ScriptClasses
             var result = _sqlDapper.GetAll<ValitationScriptsModel>(Constants.SVValidationStepsTracking, para);
             return (result);
         }
+        public List<ValidationStepsTrackingModel> GetReport()
+        {
+            para.Add("Action", "GetReport");
+            var result = _sqlDapper.GetAll<ValidationStepsTrackingModel>(Constants.SVValidationStepsTracking, para);
+            return (result);
+        }
+        public void SaveScriptResult(ValidationStepsTrackingModel objModel)
+        {           
+            para.Add("Action", "Insert");
+            para.Add("ScriptId", objModel.ScriptId);
+            para.Add("Status", objModel.Status);
+            para.Add("PowerShellScriptResponse", objModel.PawerShellScriptResponse);
+            para.Add("TaskActivityId", objModel.TaskActivityId);
+            var result = _sqlDapper.Create<ValitationScriptsModel>(Constants.SVValidationStepsTracking, para);
+        }
     }
 }

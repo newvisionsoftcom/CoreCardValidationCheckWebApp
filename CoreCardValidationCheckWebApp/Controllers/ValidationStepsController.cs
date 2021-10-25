@@ -52,14 +52,7 @@ namespace CoreCardValidationCheckWebApp.Controllers
  
             if (!String.IsNullOrEmpty(searchString))
             {
-                datagride = datagride.Where(s => s.TaskActivityName.Contains(searchString)
-                                      || s.CategoryName.Contains(searchString));
-            }
-
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                datagride = datagride.Where(s => s.TaskActivityName.Contains(searchString)
-                                      || s.CategoryName.Contains(searchString));
+                datagride = datagride.Where(s => s.TaskActivityName.ToLower().Contains(searchString.ToLower()));
             }
 
             switch (sortOrder)
@@ -81,13 +74,6 @@ namespace CoreCardValidationCheckWebApp.Controllers
             //int pageSize = 3;
             //return View(PaginatedList<ValidationStepsModel>.CreateAsync(datagride, pageNumber ?? 1, pageSize));
         }
-
-        //public IActionResult Index_ok()
-        //{
-        //    var result = LoadValidationSteps();
-        //    return View(result);
-        //}
-
         private List<ValidationStepsModel> LoadValidationSteps()           
         {
             return objValidationSteps.LoadValidationSteps();

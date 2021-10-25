@@ -69,9 +69,6 @@
 
 </div>*@
 
-
-
-
 <div class="row">
     <div class="col-md-6">       
     </div>
@@ -86,11 +83,9 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-
 <script>
 
     $(document).ready(function () {
-
         $("#btnSubmitExistingProcedure").click(function () {
 
             if ($("#TaskActivityName").val() == "") {
@@ -113,9 +108,6 @@
                 document.getElementById("idmsg").innerHTML = "Please select Existing Procedure Name";
                 return false;
             }
-
-            //debugger;
-            //return false;
 
             var valdata = {
                 TaskActivityName: $("#TaskActivityName").val(),

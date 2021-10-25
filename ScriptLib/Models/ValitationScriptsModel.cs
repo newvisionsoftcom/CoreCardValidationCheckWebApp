@@ -31,7 +31,9 @@ namespace ScriptLib.Models
         //public string ValidationSteps { get; set; }
         public List<ValidationStepsModel> ValidationStepsList { get; set; }
 
-
         public List<IFormFile> fileData;
+
+
+        public string Status { get; set; }
     }
 }

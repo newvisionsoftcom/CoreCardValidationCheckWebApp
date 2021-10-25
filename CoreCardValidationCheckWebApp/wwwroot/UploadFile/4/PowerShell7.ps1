@@ -11,7 +11,7 @@ $HTTP_Status = [int]$HTTP_Response.StatusCode
  
 
 if ($HTTP_Status -eq 200) {
-    Write-Host -ForegroundColor Green "Site is reachable 22222"
+    Write-Host -ForegroundColor Green "Site is reachable"
 }
 Else {
     Write-Host -ForegroundColor Red "The Site may be down, please check!"

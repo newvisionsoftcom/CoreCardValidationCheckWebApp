@@ -10,7 +10,7 @@
 <div class="">
     <table class="table table-striped">
         <thead>
-            <tr>
+            <tr>              
                 <th>
                     @Html.DisplayNameFor(model => model.ScriptName)
                 </th>
@@ -21,16 +21,44 @@
         <tbody>
             @foreach (var item in Model)
             {
-            <tr>
+            <tr>               
                 <td>
                     @Html.DisplayFor(modelItem => item.ScriptName)
-                </td>
-                <th>Initial</th>
+                </td>            
+                <th>  @Html.DisplayFor(modelItem => item.Status)</th>
                 <td>
-                    <a href="" data-id="@item.ScriptId" data-toggle="modal" class="modelEdit btn btn-outline-primary">Run</a>
+                    <a href="" data-id="@item.ScriptId" data-toggle="modal" class="modelEdit btn btn-outline-primary"
+                       onclick="Reexcute(@item.TaskActivityId,@item.ScriptId,'@item.ScriptName')">Reprocess</a>
                 </td>
             </tr>
             }
         </tbody>
     </table>
 </div>
+
+
+
+<script> 
+    function Reexcute(TaskActivityId, ScriptId, ScriptName) {    
+        var valdata = {
+            TaskActivityId: TaskActivityId,
+            ScriptId: ScriptId,
+            ScriptName: ScriptName
+        };
+        $.ajax({
+            url: '/ValidationStepsTracking/ExecuteSingleScript',
+            datatype: "json",
+            /*data: { ScriptId: ScriptId },*/
+            data: valdata,
+            type: "post",
+            contenttype: 'application/json; charset=utf-8',
+            async: true,
+            success: function (data) {            
+            },
+            error: function (xhr) {
+                alert('error');
+            }
+        });
+    }
+</script>
+

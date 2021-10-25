@@ -5,10 +5,63 @@
     ViewData["Title"] = "Existing Procedure Name";
 }
 
+<style>
+    .scriptscroll {
+        height: 500px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        text-align: justify;
+    }
+</style>
+
 <div class="row">
+    <div class="form-group">
+        <a href="" data-id="0" data-toggle="modal" class="modelRunAll btn btn-outline-primary">Run Scripts</a>
+    </div>
+    @using (Html.BeginForm("DownloadReport", "ValidationStepsTracking", FormMethod.Get))
+    {
+        <div class="col-md-1">
+            <div class="form-group">
+                <input id="btnDownloadReport" type="submit" value="Download Report" class="btn btn-primary" />
+            </div>
+        </div>
+    }
+</div>
+
+@using (Html.BeginForm("Index", "ValidationStepsTracking", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label class="control-label">Task Activity Name</label>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.TextBox("SearchString", ViewBag.CurrentFilter as string, new { @class = "form-control" })
+
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-group">
+                <input type="submit" value="Search" class="btn btn-primary" />
+            </div>
+        </div>
+        <div class="col-md-1">
+            <div class="form-group">
+                <input id="btnClear" type="submit" value="Clear" class="btn btn-primary" />
+            </div>
+        </div>
+    </div>
+}
+
+<div class="row scriptscroll">
     <table class="table table-striped">
         <thead>
             <tr>
+                <th>
+                    <input type="checkbox" class="check" id="checkAll">
+                </th>
                 <th>
                     @Html.ActionLink("Task Activity Name", "Index", new { sortOrder = ViewBag.TaskActivityName_Sort, currentFilter = ViewBag.CurrentFilter })
                 </th>
@@ -30,9 +83,13 @@
             {
                 <tr>
                     <td>
+                        @*<input type="checkbox" class="check" id="checkAll_@item.TaskActivityId" value="TaskActivityId_@item.TaskActivityId" name="TaskActivityId">*@
+                        <input type="checkbox" class="check" id="checkAll_@item.TaskActivityId" value="@item.TaskActivityId" name="TaskActivityId">
+                    </td>
+                    <td>
                         <a class="card-link" data-toggle="collapse" href="#collapseOne_@item.TaskActivityId" onclick="myFunction(@item.TaskActivityId)">
                             @Html.DisplayFor(modelItem => item.TaskActivityName)
-                        </a>                       
+                        </a>
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.CategoryName)
@@ -43,7 +100,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.ExistingProcedureName)
                     </td>
-                </tr>               
+                </tr>
                 <tr>
                     <td colspan="6" class="hiddenRow">
                         <div id="collapseOne_@item.TaskActivityId" class="collapse">
@@ -57,25 +114,19 @@
         </tbody>
     </table>
 </div>
-
-
-
 <input type="hidden" id="hiddenTaskActivityId" />
-
 
 <script>
     $(document).ready(function () {
-        $(".modelEdit").click(function () {
+
+        $("#btnDownloadReport").click(function () {
             $.ajax({
-                url: '/ValidationSteps/GetValidationSteps',
+                url: '/ValidationStepsTracking/DownloadReport',
                 datatype: "json",
-                data: { Id: $(this).data('id') },
                 type: "post",
                 contenttype: 'application/json; charset=utf-8',
                 async: true,
                 success: function (data) {
-                    $('#myModal').modal('show');
-                    $("#divShow").html(data);
                 },
                 error: function (xhr) {
                     alert('error');
@@ -83,21 +134,66 @@
             });
         });
 
-
-        $(".modelDelete").click(function () {
-            $("#hiddenVTaskActivityId").val($(this).data('id'));
-            $('#myModalDelete').modal('show');
+        $("#btnClear").click(function () {
+            $('#SearchString').val('');
         });
 
+        $("#checkAll").click(function () {
+            $(".check").prop('checked', $(this).prop('checked'));
+        });
+
+        $(".modelRunAll").click(function () {
+            var array = [];
+            //$("input:checkbox[name=type]:checked").each(function () {
+            //    debugger;
+            //    array.push($(this).val());
+            //});
+
+            var checkboxes = document.querySelectorAll('input[type=checkbox]:checked')
+
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i].value != 'on')
+                    array.push(checkboxes[i].value)
+            }
+
+            var arrayTaskActivityId = [];
+            var checkboxes = document.getElementsByName('TaskActivityId');
+            for (var checkbox of checkboxes) {
+                if (checkbox.checked) {
+                    arrayTaskActivityId.push(checkbox.value);
+                }
+            }
+
+            var arrayScriptId = [];
+            var checkboxes = document.getElementsByName('ScriptId');
+            for (var checkbox of checkboxes) {
+                if (checkbox.checked) {
+                    arrayScriptId.push(checkbox.value);
+                }
+            }
+
+            var valdata = {
+                TaskActivityIdValues: arrayTaskActivityId
+            };
+
+            $.ajax({
+                url: '/ValidationStepsTracking/RunScripts',
+                datatype: "json",
+                data: valdata,
+                type: "post",
+                contenttype: 'application/json; charset=utf-8',
+                async: true,
+                success: function (data) {
+                },
+                error: function (xhr) {
+                    alert('error');
+                }
+            });
+        });
     });
 
     function myFunction(TaskActivityId) {
-        //  alert(TaskActivityId);
-
-        // debugger;
-
         $("#hiddenTaskActivityId").val(TaskActivityId);
-
         $.ajax({
             url: '/ValidationStepsTracking/GetValidationScript_ByValidationStepsID',
             datatype: "json",
@@ -106,9 +202,6 @@
             contenttype: 'application/json; charset=utf-8',
             async: true,
             success: function (data) {
-
-                //alert("TaskActivityId  == " + $("#hiddenTaskActivityId").val());
-
                 $("#Scriptdiv_" + $("#hiddenTaskActivityId").val()).html(data);
             },
             error: function (xhr) {

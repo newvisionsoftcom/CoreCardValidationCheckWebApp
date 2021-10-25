@@ -57,7 +57,6 @@
                 var files = fileUpload.files;
                 var fileData = new FormData();
 
-                debugger;
                 for (var i = 0; i < files.length; i++) {
                     if (files[i].name.split('.').pop().toLowerCase() != "ps1") {
                         $('#myModalPopup').modal('show');
@@ -65,9 +64,6 @@
                         return false;
                     }
                 }
-
-                //return false;
-
                 for (var i = 0; i < files.length; i++) {
                     fileData.append("fileData", files[i]);
                 }
@@ -77,7 +73,7 @@
                 fileData.append("ScriptId", $("#ScriptId").val());
 
                 $.ajax({
-                    url: '/ValitationScripts/OnPostMyUploader',
+                    url: '/ValitationScripts/OnPostFileUploader',
                     type: "POST",
                     contentType: false,
                     processData: false,

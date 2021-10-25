@@ -11,8 +11,20 @@ namespace ScriptLib.Models
     {
         public List<ValidationStepsModel> ValidationStepsList { get; set; }
 
+        public int[] TaskActivityIdValues { get; set; }
+        public int[] ScriptIdValues { get; set; }
+
         //[Key]
-        //public int TaskActivityId { get; set; }
+        public int TaskActivityId { get; set; }
+        public string TaskActivityName { get; set; }
+        public string PawerShellScriptResponse { get; set; }
+      
+
+        public string StartTimeStamp { get; set; }
+        public string EndTimestamp { get; set; }
+        public string ScriptName { get; set; }
+
+
         //public int GroupId { get; set; }
 
         //[DisplayName("Task Activity Name")]
@@ -28,6 +40,10 @@ namespace ScriptLib.Models
         //public string ComplexietyName { get; set; }
         //public string ExistingProcedureName { get; set; }
         //public string FrequencyName { get; set; }
+
+        public int ScriptId { get; set; }
+        public string Status { get; set; }
+        
 
     }
 }

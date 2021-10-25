@@ -55,15 +55,6 @@ namespace ScriptLib.ScriptClasses
             //Insert Record
             if (objModel.ScriptId == 0)
             {
-                //para.Add("Action", "GelById");
-                //result = _sqlDapper.Get<ValitationScriptsModel>(Constants.SVValidationSteps, para);
-                //if (result != null)
-                //{
-                //    responseResult.Message = "Record is alredy present";
-                //    responseResult.Status = false;
-                //}
-                //else
-                //{
                 para.Add("Action", "Insert");
                 resultQueryStatus = _sqlDapper.Create<ValitationScriptsModel>(Constants.SVValitationScripts, para);
                 if (resultQueryStatus == 1)
